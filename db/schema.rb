@@ -18,8 +18,12 @@ ActiveRecord::Schema.define(version: 20190528204008) do
 
   create_table "concerts", force: :cascade do |t|
     t.string  "name"
+    t.string  "date"
+    t.string  "time"
     t.integer "artist_id"
     t.integer "location_id"
+    t.string  "venue_url"
+    t.string  "artist_tickets_url"
   end
 
   create_table "locations", force: :cascade do |t|
