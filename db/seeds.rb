@@ -414,23 +414,23 @@ def create_concerts
 
   Artist.all.each do |artist|
     artist_name = artist.name
-    venue_city_name = 0
-    venue_state_name = 0
-    get_events_from_api(artist_name)['_embedded']['events'].each do |event|
-      if !event['_embedded']['venues'][0]['state']
-      else
-        event_date = event['dates']['start']['localDate']
-        event_time = event['dates']['start']['localTime']
-        event_city_name = event['_embedded']['venues'][0]['city']['name']
-        event_state_name = event['_embedded']['venues'][0]['state']['name']
-        venue_url = event['_embedded']['venues'][0]['url']
-        artist_tickets_url = event['_embedded']['attractions'][0]['url']
-        new_location = Location.find_or_create_by(city: event_city_name, state: event_state_name)
-        Concert.create(name: "#{event_city_name} #{artist_name}", date: event_date, time: event_time, artist_id: artist.id, location_id: new_location.id, venue_url: venue_url, artist_tickets_url: artist_tickets_url)
+    begin
+      get_events_from_api(artist_name)['_embedded']['events'].each do |event|
+        begin 
+            event_date = event['dates']['start']['localDate']
+            event_time = event['dates']['start']['localTime']
+            event_city_name = event['_embedded']['venues'][0]['city']['name']
+            event_state_name = event['_embedded']['venues'][0]['state']['name']
+            venue_url = event['_embedded']['venues'][0]['url']
+            artist_tickets_url = event['_embedded']['attractions'][0]['url']
+            new_location = Location.find_or_create_by(city: event_city_name, state: event_state_name)
+            Concert.create(name: "#{event_city_name} #{artist_name}", date: event_date, time: event_time, artist_id: artist.id, location_id: new_location.id, venue_url: venue_url, artist_tickets_url: artist_tickets_url)
+          rescue
+          end    
       end
+    rescue
     end
   end
-  
 end
 
 create_concerts

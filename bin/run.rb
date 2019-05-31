@@ -5,9 +5,7 @@ require 'json'
 require 'pry'
 require 'JSON'
 
-
-puts "sup"
-
+# Get artist names from Artists table
 artist_names = Artist.all.map do | artist_obj |
   artist_obj.name
 end
