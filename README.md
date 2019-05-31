@@ -1,59 +1,58 @@
-# Module One Final Project Guidelines
+# Pitchfork's Best New Music
 
-Congratulations, you're at the end of module one! You've worked crazy hard to get here and have learned a ton.
+# User stories
 
-For your final project, we'll be building a Command Line database application.
+* As a user, I want to enter event and/or location and find events
+* As a user, I want to scroll through Pitchfork's Best New Music artists and find their events
+* As a user, I want to be directed to a link where I can purchase event tickets
+* As a user, I want to be able to analyze event data based on Pitchfork's Best New Music artists
 
-## Project Requirements
+# Running app
 
-### Option One - Data Analytics Project
+This app is CLI-based and run in the console. Start the app by running the bin/run.rb file.
+ 
+Once the app is started the user will be prompted to enter their name. Then the prompt will ask if the user would like to select from artists based on Pitchfork's Best New Albums.
+ 
+If the user answers yes, they can select one artist from a prompt list. Upon artist selection the user can choose from a list of upcoming events by their selected artist. Upon event selection the console displays event info including name, venue, date, time, and location. Then the prompt will ask if the user would like to buy a ticket based on the displayed event info. If the user answers yes, CLI will open internet browser directly to a TicketMaster purchase link for the chosen event.  If the user answers no, then the CLI will ask for optional feedback detailing why the user passed on TicketMaster service. After "noting" user's feedback, CLI will prompt if the user is interested in any other event, and loop back to the "search event" step.
 
-1. Access a Sqlite3 Database using ActiveRecord.
-2. You should have at minimum three models including one join model. This means you must have a many-to-many relationship.
-3. You should seed your database using data that you collect either from a CSV, a website by scraping, or an API.
-4. Your models should have methods that answer interesting questions about the data. For example, if you've collected info about movie reviews, what is the most popular movie? What movie has the most reviews?
-5. You should provide a CLI to display the return values of your interesting methods.  
-6. Use good OO design patterns. You should have separate classes for your models and CLI interface.
+If the user answers no, CLI prompt will ask the user to enter an event they are interested in. The CLI would then search TicketMaster API for asked events and list possible matches. The user would then be able to select their desired event. Upon event selection the console displays event info including name, venue, date, time, and location. Then the prompt will ask if the user would like to buy a ticket based on the displayed event info. If the user answers yes, CLI will open internet browser directly to a TicketMaster purchase link for the chosen event. If the user answers no, then the CLI will ask for optional feedback detailing why the user passed on TicketMaster service. After "noting" user's feedback, CLI will prompt if the user is interested in any other event, and loop back to the "search event" step.
 
-  **Resource:** [Easy Access APIs](https://github.com/learn-co-curriculum/easy-access-apis)
+# Seeding Database with Top Artists (According to Pitchfork)
 
-### Option Two - Command Line CRUD App
+The app uses Pitchfork's Top Album list to prepopulate the database with the top 60 trending artists. We used a data-miner tool (from data-miner.io) to scrape data from Pitchfork's website, pull data in CSV formate, and then convert the CSV to a JSON file using "convertcsv.com". We input the JSON file to seeds.rb from where we create our SQL database. The "Performer" database is a variable source table and can be adjusted according to user's preference and events/performers the user would like to view. 
 
-1. Access a Sqlite3 Database using ActiveRecord.
-2. You should have a minimum of three models.
-3. You should build out a CLI to give your user full CRUD ability for at least one of your resources. For example, build out a command line To-Do list. A user should be able to create a new to-do, see all todos, update a todo item, and delete a todo. Todos can be grouped into categories, so that a to-do has many categories and categories have many to-dos.
-4. Use good OO design patterns. You should have separate models for your runner and CLI interface.
+# Seeding Database with Concerts and Locations where Top Artists are performing
 
-### Brainstorming and Proposing a Project Idea
+This app utilizes the TicketMaster API. The seeds file runs every "Performer" (in our case Pitchfork's top Artists) from our Performers table through the TicketMaster API search. The TicketMaster API returns the events for each artist and each artist's event's JSON file is parsed so the event data can be utilized. Once the event is in appropriate (database) format, the seed file creates a new entry for each unique Location and Event. 
 
-Projects need to be approved prior to launching into them, so take some time to brainstorm project options that will fulfill the requirements above.  You must have a minimum of four [user stories](https://en.wikipedia.org/wiki/User_story) to help explain how a user will interact with your app.  A user story should follow the general structure of `"As a <role>, I want <goal/desire> so that <benefit>"`. In example, if we were creating an app to randomly choose nearby restaurants on Yelp, we might write:
+After setting up three databases (Performers, Locations and join class Events), user can choose to run through the CLI and purchase tickets for desired events or use proprietary analytics tab to process data from Ticketmaster API. 
 
-* As a user, I want to be able to enter my name to retrieve my records
-* As a user, I want to enter a location and be given a random nearby restaurant suggestion
-* As a user, I should be able to reject a suggestion and not see that restaurant suggestion again
-* As a user, I want to be able to save to and retrieve a list of favorite restaurant suggestions
+Some of the data-processing methods available to the user are:
 
-## Instructions
+  <b>Performer Methods<b>
+ 
+  1) find_events -- Listing all upcoming Events for selected Performer
+  2) find_locations -- Listing all Locations for Events by selected Performer 
+  3) count_events -- Counting all upcoming Events for selected Performer
+  4) count_locations -- Counting all Locations for Events by selected Performer
+  5) self.most_touring -- Showing Performer with the most events
+  6) events_by_location(location) -- Find Events in specified Location with selected Performer. Take one location argument.
 
-1. Fork and clone this repository.
-2. Build your application. Make sure to commit early and commit often. Commit messages should be meaningful (clearly describe what you're doing in the commit) and accurate (there should be nothing in the commit that doesn't match the description in the commit message). Good rule of thumb is to commit every 3-7 mins of actual coding time. Most of your commits should have under 15 lines of code and a 2 line commit is perfectly acceptable.
-3. Make sure to create a good README.md with a short description, install instructions, a contributors guide and a link to the license for your code.
-4. Make sure your project checks off each of the above requirements.
-5. Prepare a video demo (narration helps!) describing how a user would interact with your working project.
-    * The video should:
-      - Have an overview of your project.(2 minutes max)
-6. Prepare a presentation to follow your video.(3 minutes max)
-    * Your presentation should:
-      - Describe something you struggled to build, and show us how you ultimately implemented it in your code.
-      - Discuss 3 things you learned in the process of working on this project.
-      - Address, if anything, what you would change or add to what you have today?
-      - Present any code you would like to highlight.   
-7. *OPTIONAL, BUT RECOMMENDED*: Write a blog post about the project and process.
+  <b>Location Methods<b>
+ 
+  1) find_events -- Listing all upcoming Events for selected Location
+  2) find_performers -- Listing all Performers by selected Location 
+  3) count_events -- Counting all upcoming Events for selected Location
+  4) count_performers -- Counting all Performers for Events by selected Location 
+  5) self.most_happening_location -- Showing Location with the most events
+  6) events_by_performer -- Find Events with specified Performer by selected Location. Takes one performer argument.
 
----
-### Common Questions:
-- How do I turn off my SQL logger?
-```ruby
-# in config/environment.rb add this line:
-ActiveRecord::Base.logger = nil
-```
+   <b>Event Methods<b>
+ 
+  1) all_events -- Listing all events 
+ 
+
+ ## Authors
+ 
+  Brendan Brown and Stefan Stojanovic
+ 

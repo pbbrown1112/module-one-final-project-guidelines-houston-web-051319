@@ -6,9 +6,9 @@ require 'pry'
 require 'JSON'
 
 
-Artist.destroy_all
+Performer.destroy_all
 Location.destroy_all
-Concert.destroy_all
+Event.destroy_all
 
 # Creating all the best new artists according to Pitchfork
 
@@ -386,45 +386,35 @@ end
 artists = artists(bestNewMusic)
 
 artists.each do |artist|
-  Artist.create(name: artist)
+  Performer.create(name: artist)
 end
 
 
-# Creating all the Locations
-   
-# def create_locations(cities_array)
-#     cities_array.each do | city |
-#         Location.create(city: city[:city], state: city[:state_name])
-#     end
-# end
-
-# create_locations(cities)
-
-# Creating all the Concerts
+# Creating all Events and Locations
 
 def get_events_from_api(name)
   #make the web request
   name1 = name
-  artist_link = "https://app.ticketmaster.com/discovery/v2/events.json?keyword=#{name1}&countrycode=US&apikey=ShI4Sd340EJ32f1k6rUgkYPocLSO2qTq"
-  response_string = RestClient.get(artist_link)
+  performer_link = "https://app.ticketmaster.com/discovery/v2/events.json?keyword=#{name1}&countrycode=US&apikey=ShI4Sd340EJ32f1k6rUgkYPocLSO2qTq"
+  response_string = RestClient.get(performer_link)
   response_hash = JSON.parse(response_string)
 end
   
-def create_concerts
+def create_events
 
-  Artist.all.each do |artist|
-    artist_name = artist.name
+  Performer.all.each do |performer|
+    performer_name = performer.name
     begin
-      get_events_from_api(artist_name)['_embedded']['events'].each do |event|
+      get_events_from_api(performer_name)['_embedded']['events'].each do |event|
         begin 
             event_date = event['dates']['start']['localDate']
             event_time = event['dates']['start']['localTime']
             event_city_name = event['_embedded']['venues'][0]['city']['name']
             event_state_name = event['_embedded']['venues'][0]['state']['name']
             venue_url = event['_embedded']['venues'][0]['url']
-            artist_tickets_url = event['_embedded']['attractions'][0]['url']
+            performer_tickets = event['_embedded']['attractions'][0]['url']
             new_location = Location.find_or_create_by(city: event_city_name, state: event_state_name)
-            Concert.create(name: "#{event_city_name} #{artist_name}", date: event_date, time: event_time, artist_id: artist.id, location_id: new_location.id, venue_url: venue_url, artist_tickets_url: artist_tickets_url)
+            Event.create(name: "#{event_city_name} #{performer_name}", date: event_date, time: event_time, performer_id: performer.id, location_id: new_location.id, venue_url: venue_url, performer_tickets: performer_tickets)
           rescue
           end    
       end
@@ -433,7 +423,7 @@ def create_concerts
   end
 end
 
-create_concerts
+create_events
 
 
 

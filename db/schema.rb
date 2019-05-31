@@ -12,23 +12,23 @@
 
 ActiveRecord::Schema.define(version: 20190528204008) do
 
-  create_table "artists", force: :cascade do |t|
-    t.string "name"
-  end
-
-  create_table "concerts", force: :cascade do |t|
+  create_table "events", force: :cascade do |t|
     t.string  "name"
     t.string  "date"
     t.string  "time"
-    t.integer "artist_id"
+    t.integer "performer_id"
     t.integer "location_id"
     t.string  "venue_url"
-    t.string  "artist_tickets_url"
+    t.string  "performer_tickets"
   end
 
   create_table "locations", force: :cascade do |t|
     t.string "city"
     t.string "state"
+  end
+
+  create_table "performers", force: :cascade do |t|
+    t.string "name"
   end
 
 end
